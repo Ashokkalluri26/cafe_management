@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h2><i class="fas fa-chart-line"></i> Admin Dashboard</h2>
+                    <div>
+                        <a href="{{ url_for('admin') }}" class="btn btn-light">
+                            <i class="fas fa-utensils"></i> Menu Management
+                        </a>
+                        <a href="{{ url_for('orders') }}" class="btn btn-light ms-2">
+                            <i class="fas fa-clipboard-list"></i> Orders
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Summary Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Users</h5>
+                                    <h3>{{ total_users }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Orders</h5>
+                                    <h3>{{ total_orders }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Pending Orders</h5>
+                                    <h3>{{ pending_orders }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Revenue</h5>
+                                    <h3>{{ total_revenue|inr }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Details Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Total Orders</th>
+                                    <th>Items Purchased</th>
+                                    <th>Total Spent</th>
+                                    <th>Last Order</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user_stat in user_stats %}
+                                <tr>
+                                    <td>{{ user_stat.username }}</td>
+                                    <td>{{ user_stat.total_orders }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#itemsModal{{ user_stat.id }}">
+                                            View Items ({{ user_stat.total_items }})
+                                        </button>
+                                    </td>
+                                    <td>{{ user_stat.total_spent|inr }}</td>
+                                    <td>{{ user_stat.last_order_date.strftime('%Y-%m-%d %H:%M') if user_stat.last_order_date else 'No orders' }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#orderHistoryModal{{ user_stat.id }}">
+                                            Order History
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Items Modal for each user -->
+{% for user_stat in user_stats %}
+<div class="modal fade" id="itemsModal{{ user_stat.id }}" tabindex="-1" aria-labelledby="itemsModalLabel{{ user_stat.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="itemsModalLabel{{ user_stat.id }}">Items Purchased by {{ user_stat.username }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Category</th>
+                            <th>Quantity</th>
+                            <th>Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in user_stat.items %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.category }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.total|inr }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Order History Modal for each user -->
+<div class="modal fade" id="orderHistoryModal{{ user_stat.id }}" tabindex="-1" aria-labelledby="orderHistoryModalLabel{{ user_stat.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderHistoryModalLabel{{ user_stat.id }}">Order History for {{ user_stat.username }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date</th>
+                            <th>Items</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in user_stat.orders %}
+                        <tr>
+                            <td>#{{ order.id }}</td>
+                            <td>{{ order.date_ordered.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <ul class="list-unstyled">
+                                    {% for item in order.items %}
+                                    <li>{{ item.menu_item.name }} x{{ item.quantity }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>{{ order.total_amount|inr }}</td>
+                            <td>
+                                <span class="badge {% if order.status == 'pending' %}bg-warning
+                                    {% elif order.status == 'completed' %}bg-success
+                                    {% elif order.status == 'cancelled' %}bg-danger
+                                    {% endif %}">
+                                    {{ order.status|title }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %} 

@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Café Management{% endblock %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1><i class="fas fa-mug-hot"></i> Welcome to Our Café</h1>
+                    <p class="lead">Experience the perfect blend of comfort and taste in every cup. Our café offers a cozy atmosphere where you can enjoy premium coffee and delicious snacks.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Operating Hours Section -->
+    <section class="operating-hours-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="hours-card">
+                        <div class="card-header">
+                            <h3 class="mb-0"><i class="far fa-clock"></i> Today's Hours</h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="lead text-center mb-0">
+                                <strong>
+                                    {% set days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+                                    {% set current_day = days[now().weekday()] %}
+                                    {{ current_day }}:
+                                </strong><br>
+                                7:00 AM - 9:00 PM
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="hours-card">
+                        <div class="card-header">
+                            <h3 class="mb-0"><i class="fas fa-star"></i> Special Hours</h3>
+                        </div>
+                        <div class="card-body">
+                            <ul class="hours-list">
+                                <li>
+                                    <span><i class="fas fa-coffee"></i> Happy Hour</span>
+                                    <span>3:00 PM - 6:00 PM</span>
+                                </li>
+                                <li>
+                                    <span><i class="fas fa-sun"></i> Breakfast Special</span>
+                                    <span>7:00 AM - 11:00 AM</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="hours-card">
+                        <div class="card-header">
+                            <h3 class="mb-0"><i class="fas fa-calendar-week"></i> Weekly Hours</h3>
+                        </div>
+                        <ul class="hours-list">
+                            <li class="{{ 'today' if now().weekday() == 0 }}">
+                                <span>Monday</span>
+                                <span>7:00 AM - 9:00 PM</span>
+                            </li>
+                            <li class="{{ 'today' if now().weekday() == 1 }}">
+                                <span>Tuesday</span>
+                                <span>7:00 AM - 9:00 PM</span>
+                            </li>
+                            <li class="{{ 'today' if now().weekday() == 2 }}">
+                                <span>Wednesday</span>
+                                <span>7:00 AM - 9:00 PM</span>
+                            </li>
+                            <li class="{{ 'today' if now().weekday() == 3 }}">
+                                <span>Thursday</span>
+                                <span>7:00 AM - 9:00 PM</span>
+                            </li>
+                            <li class="{{ 'today' if now().weekday() == 4 }}">
+                                <span>Friday</span>
+                                <span>7:00 AM - 9:00 PM</span>
+                            </li>
+                            <li class="{{ 'today' if now().weekday() == 5 }}">
+                                <span>Saturday</span>
+                                <span>8:00 AM - 10:00 PM</span>
+                            </li>
+                            <li class="{{ 'today' if now().weekday() == 6 }}">
+                                <span>Sunday</span>
+                                <span>8:00 AM - 8:00 PM</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Café Features -->
+    <div class="container mb-5">
+        <div class="cafe-features">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="feature-item">
+                        <i class="fas fa-coffee"></i>
+                        <h3>Premium Coffee</h3>
+                        <p>Expertly crafted beverages using the finest coffee beans from around the world.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-item">
+                        <i class="fas fa-wifi"></i>
+                        <h3>Free Wi-Fi</h3>
+                        <p>Stay connected with our high-speed internet while enjoying your favorite drinks.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-item">
+                        <i class="fas fa-cookie"></i>
+                        <h3>Fresh Snacks</h3>
+                        <p>Delicious snacks made fresh daily to complement your coffee experience.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Section -->
+    <section class="container py-5">
+        <div class="row">
+            <!-- Menu Items -->
+            <div class="col-lg-8">
+                <!-- Coffee Section -->
+                <h2 class="category-title">
+                    <i class="fas fa-mug-hot"></i> Coffee
+                </h2>
+                <div class="row g-4 mb-5">
+                    {% for coffee in coffees %}
+                    <div class="col-md-6">
+                        <div class="card menu-card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ coffee.name }}</h5>
+                                <p class="card-text">{{ coffee.description }}</p>
+                                <p class="price">{{ coffee.price|inr }}</p>
+                                {% if current_user.is_authenticated %}
+                                <form action="{{ url_for('add_to_cart', item_id=coffee.id) }}" method="POST" class="d-flex align-items-center">
+                                    <input type="number" name="quantity" value="1" min="1" max="10" class="form-control form-control-sm me-2" style="width: 70px;">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-cart-plus"></i> Add
+                                    </button>
+                                </form>
+                                {% else %}
+                                <a href="{{ url_for('login') }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-sign-in-alt"></i> Login to Order
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Snacks Section -->
+                <h2 class="category-title">
+                    <i class="fas fa-cookie-bite"></i> Snacks
+                </h2>
+                <div class="row g-4">
+                    {% for snack in snacks %}
+                    <div class="col-md-6">
+                        <div class="card menu-card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ snack.name }}</h5>
+                                <p class="card-text">{{ snack.description }}</p>
+                                <p class="price">{{ snack.price|inr }}</p>
+                                {% if current_user.is_authenticated %}
+                                <form action="{{ url_for('add_to_cart', item_id=snack.id) }}" method="POST" class="d-flex align-items-center">
+                                    <input type="number" name="quantity" value="1" min="1" max="10" class="form-control form-control-sm me-2" style="width: 70px;">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-cart-plus"></i> Add
+                                    </button>
+                                </form>
+                                {% else %}
+                                <a href="{{ url_for('login') }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-sign-in-alt"></i> Login to Order
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Cart Sidebar -->
+            <div class="col-lg-4">
+                {% if current_user.is_authenticated %}
+                <div class="cart-sidebar">
+                    <h3><i class="fas fa-shopping-cart"></i> Your Cart</h3>
+                    {% if cart_items %}
+                        {% for item in cart_items %}
+                        <div class="cart-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">{{ item.menu_item.name }}</h6>
+                                    <small class="text-muted">
+                                        {{ item.quantity }} x {{ item.menu_item.price|inr }}
+                                    </small>
+                                </div>
+                                <div>
+                                    <form action="{{ url_for('remove_from_cart', item_id=item.menu_item_id) }}" method="POST" style="display: inline;">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="cart-total">
+                            <div class="d-flex justify-content-between">
+                                <span>Total:</span>
+                                <span>{{ cart_total|inr }}</span>
+                            </div>
+                            <form action="{{ url_for('place_order') }}" method="POST" class="mt-3">
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="fas fa-check"></i> Place Order
+                                </button>
+                            </form>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Your cart is empty</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %} 

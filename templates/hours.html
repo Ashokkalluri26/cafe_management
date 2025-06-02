@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Operating Hours - Café Management{% endblock %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1><i class="far fa-clock"></i> Operating Hours</h1>
+            <p class="lead">Find out when we're open and learn about our special service hours.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container pb-5">
+        <div class="row">
+            <!-- Regular Hours -->
+            <div class="col-md-6">
+                <div class="card hours-card">
+                    <div class="card-header">
+                        <h3 class="mb-0"><i class="fas fa-calendar-alt"></i> Regular Hours</h3>
+                    </div>
+                    <ul class="hours-list">
+                        {% for day, hours in operating_hours['Regular Hours'].items() %}
+                        <li class="{{ 'today' if day == days[now().weekday()] }}">
+                            <strong>{{ day }}</strong>
+                            <span>{{ hours.open }} - {{ hours.close }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Holiday Hours -->
+            <div class="col-md-6">
+                <div class="card hours-card">
+                    <div class="card-header">
+                        <h3 class="mb-0"><i class="fas fa-gift"></i> Holiday Hours</h3>
+                    </div>
+                    <ul class="hours-list">
+                        {% for holiday, hours in operating_hours['Holiday Hours'].items() %}
+                        <li>
+                            <strong>{{ holiday }}</strong>
+                            {% if hours == 'Closed' %}
+                                <span class="special-note">{{ hours }}</span>
+                            {% else %}
+                                <span>{{ hours.open }} - {{ hours.close }}</span>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Special Services -->
+            <div class="col-12">
+                <div class="card hours-card mt-4">
+                    <div class="card-header">
+                        <h3 class="mb-0"><i class="fas fa-star"></i> Special Services & Promotions</h3>
+                    </div>
+                    <ul class="hours-list">
+                        {% for service, time in operating_hours['Special Services'].items() %}
+                        <li>
+                            <strong>{{ service }}</strong>
+                            <span>{{ time }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

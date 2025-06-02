@@ -1,0 +1,323 @@
+/* Modern Color Palette */
+:root {
+    --primary-color: #6C63FF;      /* Vibrant Purple */
+    --secondary-color: #00D9B2;    /* Bright Turquoise */
+    --accent-color: #FFC107;       /* Golden Yellow */
+    --success-color: #4CAF50;      /* Rich Green */
+    --warning-color: #FF9800;      /* Bright Orange */
+    --danger-color: #FF4B4B;       /* Vivid Red */
+    --dark-color: #2A2B3D;         /* Deep Navy */
+    --light-color: #F0F3FF;        /* Soft Blue White */
+    --gradient-1: #6C63FF;         /* For Gradients */
+    --gradient-2: #00D9B2;         /* For Gradients */
+}
+
+/* Global Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, var(--light-color) 0%, #ffffff 100%);
+    color: var(--dark-color);
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Enhanced Navbar Styling */
+.navbar {
+    background: linear-gradient(90deg, rgba(108, 99, 255, 0.95) 0%, rgba(0, 217, 178, 0.95) 100%) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: none;
+}
+
+.navbar-brand, .nav-link {
+    color: white !important;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-link:hover {
+    color: var(--accent-color) !important;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--accent-color);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* Enhanced Card Styling */
+.card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(108, 99, 255, 0.1);
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.95);
+    border-left: 4px solid var(--primary-color);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(108, 99, 255, 0.2);
+}
+
+.card-header {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border-radius: 16px 16px 0 0 !important;
+    border-bottom: none;
+    padding: 1.5rem;
+}
+
+/* Enhanced Button Styling */
+.btn-primary {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)) !important;
+    border: none !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(108, 99, 255, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(45deg, var(--success-color), var(--secondary-color)) !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+/* Enhanced Table Styling */
+.table {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.table thead th {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    padding: 1rem;
+}
+
+/* Enhanced Badge Styling */
+.badge {
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.bg-primary {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)) !important;
+}
+
+.bg-success {
+    background: linear-gradient(45deg, var(--success-color), var(--secondary-color)) !important;
+}
+
+.bg-warning {
+    background: linear-gradient(45deg, var(--warning-color), var(--accent-color)) !important;
+    color: white !important;
+}
+
+.bg-danger {
+    background: linear-gradient(45deg, var(--danger-color), #FF6B6B) !important;
+}
+
+/* Enhanced Progress Bar */
+.progress {
+    height: 10px;
+    border-radius: 5px;
+    background-color: rgba(108, 99, 255, 0.1);
+    overflow: hidden;
+}
+
+.progress-bar {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(108, 99, 255, 0.2);
+}
+
+/* Enhanced Footer Styling */
+footer {
+    background: linear-gradient(135deg, var(--dark-color) 0%, #1a1b2e 100%) !important;
+    padding: 3rem 0 1.5rem;
+    border-top: 4px solid var(--accent-color);
+}
+
+footer h5 {
+    color: white;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+footer a {
+    color: rgba(255,255,255,0.8) !important;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+footer a:hover {
+    color: var(--accent-color) !important;
+    transform: translateX(5px);
+}
+
+footer i {
+    margin-right: 10px;
+    color: var(--accent-color);
+}
+
+/* Animation Effects */
+.shine-effect {
+    position: relative;
+    overflow: hidden;
+}
+
+.shine-effect::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(30deg);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    from {
+        transform: rotate(30deg) translateX(-100%);
+    }
+    to {
+        transform: rotate(30deg) translateX(100%);
+    }
+}
+
+/* Alert Styling */
+.alert {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.alert-success {
+    background-color: var(--success-color);
+    color: var(--dark-color);
+}
+
+.alert-danger {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.alert-warning {
+    background-color: var(--warning-color);
+    color: var(--dark-color);
+}
+
+/* Enhanced List Group Styling */
+.list-group-item {
+    border: none;
+    margin-bottom: 8px;
+    border-radius: 15px !important;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.list-group-item:hover {
+    background: linear-gradient(45deg, rgba(108, 99, 255, 0.1), rgba(0, 217, 178, 0.1));
+    transform: translateX(5px);
+    border-left: 4px solid var(--primary-color);
+}
+
+/* Enhanced Form Styling */
+.form-control {
+    border-radius: 15px;
+    border: 2px solid rgba(108, 99, 255, 0.1);
+    padding: 12px 20px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(108, 99, 255, 0.25);
+    background: white;
+}
+
+/* Empty State Styling */
+.text-muted {
+    color: #95a5a6 !important;
+}
+
+/* Enhanced Icon Colors */
+.fa-heart {
+    background: linear-gradient(45deg, var(--danger-color), #FF6B6B);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.fa-shopping-cart {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.fa-coffee {
+    background: linear-gradient(45deg, var(--warning-color), var(--accent-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .navbar {
+        padding: 1rem;
+    }
+    
+    footer {
+        text-align: center;
+    }
+} 

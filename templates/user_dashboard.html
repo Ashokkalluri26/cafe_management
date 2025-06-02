@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}My Dashboard - Café Management{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-user-circle fa-3x text-primary"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h4 class="mb-1">Welcome back, {{ current_user.username }}!</h4>
+                            <p class="text-muted mb-0">Here's your order summary and statistics</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-shopping-bag fa-2x text-primary"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-0">Total Orders</h6>
+                            <h4 class="mb-0">{{ total_orders }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-rupee-sign fa-2x text-success"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-0">Total Spent</h6>
+                            <h4 class="mb-0">{{ total_spent|inr }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-clock fa-2x text-warning"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-0">Pending Orders</h6>
+                            <h4 class="mb-0">{{ status_counts.pending }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-check-circle fa-2x text-success"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-0">Completed Orders</h6>
+                            <h4 class="mb-0">{{ status_counts.completed }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Recent Orders -->
+        <div class="col-md-8">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history"></i> Recent Orders
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_orders %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Date</th>
+                                        <th>Items</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in recent_orders %}
+                                        <tr>
+                                            <td>#{{ order.id }}</td>
+                                            <td>{{ order.date_ordered.strftime('%Y-%m-%d %H:%M') }}</td>
+                                            <td>
+                                                <ul class="list-unstyled mb-0">
+                                                    {% for item in order.items %}
+                                                        <li>{{ item.quantity }}x {{ item.menu_item.name }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </td>
+                                            <td>{{ order.total_amount|inr }}</td>
+                                            <td>
+                                                <span class="badge bg-{{ 'success' if order.status == 'completed' else 'warning' if order.status == 'pending' else 'danger' }}">
+                                                    {{ order.status|title }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-end mt-3">
+                            <a href="{{ url_for('orders') }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-list"></i> View All Orders
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                            <h5>No orders yet</h5>
+                            <p class="text-muted">Start shopping to see your orders here!</p>
+                            <a href="{{ url_for('home') }}" class="btn btn-primary">
+                                <i class="fas fa-shopping-cart"></i> Browse Menu
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Favorite Items -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-heart"></i> Your Favorites
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if favorite_items %}
+                        <ul class="list-group list-group-flush">
+                            {% for item in favorite_items %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">{{ item.name }}</h6>
+                                        <small class="text-muted">{{ item.category }}</small>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">
+                                        {{ item.count }}x
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-heart fa-3x text-muted mb-3"></i>
+                            <h5>No favorites yet</h5>
+                            <p class="text-muted">Order items to see your favorites!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Preferences -->
+        {% if category_totals %}
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-pie"></i> Category Preferences
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for category, count in category_totals.items() %}
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="flex-shrink-0">
+                                            <i class="fas fa-{{ 'coffee' if category == 'Coffee' else 'cookie' }} fa-2x {{ 'text-primary' if category == 'Coffee' else 'text-success' }}"></i>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h6 class="mb-0">{{ category }}</h6>
+                                                <span class="badge bg-{{ 'primary' if category == 'Coffee' else 'success' }}">
+                                                    {{ count }} items
+                                                </span>
+                                            </div>
+                                            <div class="progress mt-2" style="height: 5px;">
+                                                <div class="progress-bar bg-{{ 'primary' if category == 'Coffee' else 'success' }}" 
+                                                     role="progressbar" 
+                                                     style="width: {{ (count / category_totals.values()|sum * 100)|round }}%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .progress {
+        background-color: rgba(0,0,0,0.05);
+    }
+    .list-group-item {
+        transition: all 0.3s ease;
+    }
+    .list-group-item:hover {
+        background-color: rgba(0,0,0,0.02);
+    }
+</style>
+{% endblock %} 
