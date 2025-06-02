@@ -52,8 +52,7 @@ python app.py
 5. Access the application:
 - Open http://localhost:5000 in your browser
 - Default admin credentials:
-  - Username: admin
-  - Password: admin123
+  
 
 ## Project Structure
 
